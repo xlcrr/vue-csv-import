@@ -11,7 +11,26 @@
                     </slot>
                 </div>
                 <div class="form-group csv-import-file">
-                    <input ref="csv" type="file" @change.prevent="validFileMimeType" :class="inputClass" name="csv">
+
+                    <div class="file has-name">
+                      <label class="file-label">
+                        <!-- <input class="file-input" type="file" name="resume"> -->
+                        <input ref="csv" type="file-input" @change.prevent="validFileMimeType" :class="inputClass" name="csv">
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label">
+                            Choose a file…
+                          </span>
+                        </span>
+                        <span class="file-name">
+                          Screen Shot 2017-07-29 at 15.54.25.png
+                        </span>
+                      </label>
+                    </div>
+
+
                     <slot name="error" v-if="showErrorMessage">
                         <div class="invalid-feedback d-block">
                             File type is invalid
