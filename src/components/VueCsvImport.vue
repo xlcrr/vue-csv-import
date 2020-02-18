@@ -209,9 +209,10 @@
                 });
             },
             validFileMimeType() {
-                this.$store.commit('testSomething', 'abc');
+                this.$store.commit('changeModalMargin');
                 let file = this.$refs.csv.files[0];
                 this.$emit('testme', file);
+                this.filename = file.name;
 
                 const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
                 if (file) {
@@ -234,7 +235,6 @@
             },
             readFile(callback) {
                 let file = this.$refs.csv.files[0];
-                this.filename = file.name;
                 if (file) {
                     let reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
