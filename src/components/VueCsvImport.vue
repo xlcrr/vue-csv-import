@@ -2,7 +2,7 @@
   <div class="vue-csv-uploader">
     <div class="form">
       <div class="vue-csv-uploader-part-one">
-        <div class="form-check form-group csv-import-checkbox" v-if="headers === null">
+        <div class="form-check form-group csv-import-checkbox" v-if="headers === null" style="margin-bottom: 1em;">
           <slot name="hasHeaders" :headers="hasHeaders" :toggle="toggleHasHeaders">
             <input :class="checkboxClass" type="checkbox" :id="makeId('hasHeaders')" :value="hasHeaders" @change="toggleHasHeaders">
             <label class="form-check-label" :for="makeId('hasHeaders')">
@@ -10,7 +10,7 @@
             </label>
           </slot>
         </div>
-        <div class="form-group csv-import-file">
+        <div class="form-group csv-import-file" style="margin-bottom: 1em;">
           <div class="file has-name">
             <label class="file-label">
               <input ref="csv" type="file" @change.prevent="validFileMimeType" class="file-input" name="csv">
@@ -23,7 +23,7 @@
                 </span>
               </span>
               <span class="file-name">
-                (filename)
+                {{ this.filename }}
               </span>
             </label>
           </div>
@@ -157,7 +157,8 @@ export default {
         csv: null,
         sample: null,
         isValidFileMimeType: false,
-        fileSelected: false
+        fileSelected: false,
+        filename: ''
     }),
 
     created() {
@@ -215,7 +216,7 @@ export default {
         },
         validFileMimeType() {
             let file = this.$refs.csv.files[0];
-            console.log('file', file);
+            this.filename = file;
             const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
 
             if (file) {
