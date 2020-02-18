@@ -19,7 +19,7 @@
                   <i class="fas fa-upload"></i>
                 </span>
                 <span class="file-label">
-                  Choose a file…
+                  {{ this.filename }}
                 </span>
               </span>
               <!-- Todo - get filename -->
@@ -159,7 +159,8 @@
             csv: null,
             sample: null,
             isValidFileMimeType: false,
-            fileSelected: false
+            fileSelected: false,
+            filename: 'Choose a file',
         }),
         created() {
             this.hasHeaders = this.headers;
