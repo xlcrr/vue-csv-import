@@ -1,7 +1,7 @@
 {
   "name": "vue-csv-import",
   "description": "Vue.js component to handle CSV uploads with field mapping.",
-  "version": "3.1.12",
+  "version": "3.1.13",
   "private": false,
   "description": "Vue.js component to handle CSV uploads with field mapping.",
   "author": "John Gile",

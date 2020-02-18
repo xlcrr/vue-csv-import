@@ -219,7 +219,6 @@
                 let file = this.$refs.csv.files[0];
                 // this.$emit('testme', file);
                 this.filename = file.name;
-                this.nextClicked = false;
 
                 const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
                 if (file) {
@@ -237,6 +236,7 @@
                 const _this = this;
 
                 this.$store.commit('changeModalMargin');
+                this.nextClicked = false;
 
                 this.readFile((output) => {
                     _this.sample = get(Papa.parse(output, { preview: 2, skipEmptyLines: true }), "data");
