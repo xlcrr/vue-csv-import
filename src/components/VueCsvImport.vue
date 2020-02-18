@@ -2,14 +2,14 @@
   <div class="vue-csv-uploader">
     <div class="form">
       <div class="vue-csv-uploader-part-one">
-        <div class="form-check form-group csv-import-checkbox" v-if="headers === null" style="margin-bottom: 1em;">
-          <slot name="hasHeaders" :headers="hasHeaders" :toggle="toggleHasHeaders">
-            <input :class="checkboxClass" type="checkbox" :id="makeId('hasHeaders')" :value="hasHeaders" @change="toggleHasHeaders">
-            <label class="form-check-label" :for="makeId('hasHeaders')">
+        <!-- <div class="form-check form-group csv-import-checkbox" v-if="headers === null" style="margin-bottom: 1em;"> -->
+          <!-- <slot name="hasHeaders" :headers="hasHeaders" :toggle="toggleHasHeaders"> -->
+            <!-- <input :class="checkboxClass" type="checkbox" :id="makeId('hasHeaders')" :value="hasHeaders" @change="toggleHasHeaders"> -->
+            <!-- <label class="form-check-label" :for="makeId('hasHeaders')">
                 File Has Headers
-            </label>
-          </slot>
-        </div>
+            </label> -->
+          <!-- </slot> -->
+        <!-- </div> -->
         <div class="form-group csv-import-file" style="margin-bottom: 1em;">
           <div class="file has-name">
             <label class="file-label">
@@ -22,7 +22,7 @@
                   Choose a file…
                 </span>
               </span>
-              <span class="file-name">
+              <span class="file-name" :key="filename">
                 {{ this.filename }}
               </span>
             </label>
@@ -58,7 +58,7 @@
                 <td>{{ field.label }}</td>
                 <td>
                   <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
-                    <option value="" selected disabled>Select a column</option>
+                    <option value="a" disabled selected>Select a column</option>
                     <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                   </select>
                 </td>
@@ -220,6 +220,7 @@ export default {
         validFileMimeType() {
             let file = this.$refs.csv.files[0];
             
+            alert(file);
             this.filename = file.name;
             const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
 
