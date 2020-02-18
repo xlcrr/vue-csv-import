@@ -66,11 +66,16 @@
               </tr>
             </tbody>
           </table>
+          <p>You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</p>
+          <input type="checkbox" name="termslabel" v-model="terms" />
+
           <div class="form-group" v-if="url">
             <slot name="submit" :submit="submit">
-              <button class="button is-medium is-primary" @click.prevent="submit" :value="submitBtnText">
-                Upload
-              </button>
+              <button 
+                class="button is-medium is-primary" 
+                @click.prevent="submit" 
+                :disabled="terms"
+              >Upload</button>
             </slot>
           </div>
         </div>
@@ -161,6 +166,7 @@
             isValidFileMimeType: false,
             fileSelected: false,
             filename: 'Choose a file',
+            terms: false
         }),
         created() {
             this.hasHeaders = this.headers;
