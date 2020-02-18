@@ -58,7 +58,7 @@
                 <td>{{ field.label }}</td>
                 <td>
                   <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
-                    <option :value="null" disabled selected>Select a column</option>
+                    <option value="" disabled hidden>Select a column</option>
                     <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                   </select>
                 </td>
