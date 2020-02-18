@@ -22,9 +22,10 @@
                   Choose a file…
                 </span>
               </span>
-              <span class="file-name" :key="filename">
+              <!-- Todo - get filename -->
+             <!--  <span class="file-name" :key="filename">
                 {{ this.filename }}
-              </span>
+              </span> -->
             </label>
           </div>
 
@@ -58,7 +59,7 @@
                 <td>{{ field.label }}</td>
                 <td>
                   <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
-                    <option value="" disabled hidden>Select a column</option>
+                    <option :value="null" disabled hidden>Select a column</option>
                     <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                   </select>
                 </td>
@@ -207,6 +208,8 @@
                 });
             },
             validFileMimeType() {
+                this.$store.commit('testSomething', 'abc');
+                this.$emit('testme', '123');
                 let file = this.$refs.csv.files[0];
                 const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
                 if (file) {
@@ -229,6 +232,7 @@
             },
             readFile(callback) {
                 let file = this.$refs.csv.files[0];
+                this.filename = file.name;
                 if (file) {
                     let reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
