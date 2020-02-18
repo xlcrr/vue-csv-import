@@ -58,6 +58,7 @@
                 <td>{{ field.label }}</td>
                 <td>
                   <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
+                    <option value="" selected disabled>Select a column</option>
                     <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                   </select>
                 </td>
@@ -67,6 +68,8 @@
           <div class="form-group" v-if="url">
             <slot name="submit" :submit="submit">
               <button class="button is-medium is-primary" @click.prevent="submit" :value="submitBtnText">
+                Upload
+              </button>
             </slot>
           </div>
         </div>
@@ -216,7 +219,8 @@ export default {
         },
         validFileMimeType() {
             let file = this.$refs.csv.files[0];
-            this.filename = file;
+            
+            this.filename = file.name;
             const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
 
             if (file) {
