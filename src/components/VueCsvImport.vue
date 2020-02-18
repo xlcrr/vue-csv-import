@@ -219,9 +219,6 @@ export default {
         },
         validFileMimeType() {
             let file = this.$refs.csv.files[0];
-            
-            alert(file);
-            this.filename = file.name;
             const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
 
             if (file) {
