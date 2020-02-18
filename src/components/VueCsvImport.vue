@@ -6,7 +6,7 @@
           <slot name="hasHeaders" :headers="hasHeaders" :toggle="toggleHasHeaders">
             <input :class="checkboxClass" type="checkbox" :id="makeId('hasHeaders')" :value="hasHeaders" @change="toggleHasHeaders">
             <label class="form-check-label" :for="makeId('hasHeaders')">
-                File Has Headers
+                Select this box if your file has column names.
             </label>
           </slot>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="form-group">
           <slot name="next" :load="load">
-            <button :disabled="disabledNextButton" class="button is-medium is-primary" @click.prevent="load">
+            <button :disabled="disabledNextButton" class="button is-medium is-primary" @click.prevent="load" v-show="nextClicked">
               {{ loadBtnText }}
             </button>
           </slot>
@@ -66,7 +66,7 @@
               </tr>
             </tbody>
           </table>
-          <input type="checkbox" name="termslabel" v-model="terms" />
+          <input type="checkbox" name="termslabel" id="termslabel" v-model="terms" style="margin-right: 1em;" />
           <label for="termslabel">You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</label>
 
           <div class="form-group" v-if="url">
@@ -166,7 +166,8 @@
             isValidFileMimeType: false,
             fileSelected: false,
             filename: 'Choose a file',
-            terms: false
+            terms: false,
+            nextClicked: true
         }),
         created() {
             this.hasHeaders = this.headers;
@@ -218,6 +219,7 @@
                 let file = this.$refs.csv.files[0];
                 // this.$emit('testme', file);
                 this.filename = file.name;
+                this.nextClicked = false;
 
                 const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
                 if (file) {
