@@ -45,7 +45,7 @@
       </div>
       <div class="vue-csv-uploader-part-two">
         <div class="vue-csv-mapping" v-if="sample">
-          <table :class="tableClass">
+          <table class="table is-fullwidth">
             <slot name="thead">
               <thead>
               <tr>
@@ -66,15 +66,15 @@
               </tr>
             </tbody>
           </table>
-          <p>You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</p>
           <input type="checkbox" name="termslabel" v-model="terms" />
+          <label for="termslabel">You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</label>
 
           <div class="form-group" v-if="url">
             <slot name="submit" :submit="submit">
               <button 
                 class="button is-medium is-primary" 
                 @click.prevent="submit" 
-                :disabled="terms"
+                :disabled="! terms"
               >Upload</button>
             </slot>
           </div>
