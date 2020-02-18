@@ -76,7 +76,7 @@
                 class="button is-medium is-primary" 
                 @click.prevent="submit" 
                 :value="submitBtnText"
-                :disabled="checkTermsClicked"
+                :disabled="termsClicked"
               >Upload</button>
             </slot>
           </div>
@@ -280,17 +280,17 @@ export default {
         }
     },
     computed: {
-      checkTermsClicked() {
-        return this.termsClicked;
-      },
+      // checkTermsClicked() {
+      //   return this.termsClicked;
+      // },
       firstRow() {
-          return get(this, "sample.0");
+        return get(this, "sample.0");
       },
       showErrorMessage() {
-          return this.fileSelected && !this.isValidFileMimeType;
+        return this.fileSelected && !this.isValidFileMimeType;
       },
       disabledNextButton() {
-          return !this.isValidFileMimeType;
+        return !this.isValidFileMimeType;
       }
     },
 };
