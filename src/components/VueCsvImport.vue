@@ -209,9 +209,8 @@
                 });
             },
             validFileMimeType() {
-                this.$store.commit('changeModalMargin');
                 let file = this.$refs.csv.files[0];
-                this.$emit('testme', file);
+                // this.$emit('testme', file);
                 this.filename = file.name;
 
                 const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
@@ -228,6 +227,9 @@
             },
             load() {
                 const _this = this;
+
+                this.$store.commit('changeModalMargin');
+                
                 this.readFile((output) => {
                     _this.sample = get(Papa.parse(output, { preview: 2, skipEmptyLines: true }), "data");
                     _this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data");
