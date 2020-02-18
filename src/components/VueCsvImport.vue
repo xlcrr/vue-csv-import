@@ -14,8 +14,7 @@
 
                     <div class="file has-name">
                       <label class="file-label">
-                        <!-- <input class="file-input" type="file" name="resume"> -->
-                        <input ref="csv" type="file" @change.prevent="validFileMimeType" :class="inputClass" name="csv">
+                        <input ref="csv" type="file" @change.prevent="validFileMimeType" class="file-input" name="csv">
                         <span class="file-cta">
                           <span class="file-icon">
                             <i class="fas fa-upload"></i>
