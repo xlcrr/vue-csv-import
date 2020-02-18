@@ -59,7 +59,7 @@
                 <td>{{ field.label }}</td>
                 <td>
                   <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
-                    <option :value="" disabled selected>Select a column</option>
+                    <option :value="null" disabled hidden>Select a column</option>
                     <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                   </select>
                 </td>
@@ -67,17 +67,10 @@
             </tbody>
           </table>
           <div class="form-group" v-if="url">
-
-            <label for="terms">You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</p>
-            <input type="checkbox" v-model="termsClicked" name="terms" id="terms" />
-
             <slot name="submit" :submit="submit">
-              <button 
-                class="button is-medium is-primary" 
-                @click.prevent="submit" 
-                :value="submitBtnText"
-                :disabled="termsClicked"
-              >Upload</button>
+              <button class="button is-medium is-primary" @click.prevent="submit" :value="submitBtnText">
+                Upload
+              </button>
             </slot>
           </div>
         </div>
@@ -87,211 +80,207 @@
 </template>
 
 <script>
-import { drop, every, forEach, get, isArray, map, set } from 'lodash';
-import axios from 'axios';
-import Papa from 'papaparse';
-import mimeTypes from "mime-types";
-export default {
-    props: {
-        value: Array,
-        url: {
-            type: String
-        },
-        mapFields: {
-            required: true
-        },
-        callback: {
-            type: Function,
-            default: () => ({})
-        },
-        catch: {
-            type: Function,
-            default: () => ({})
-        },
-        finally: {
-            type: Function,
-            default: () => ({})
-        },
-        parseConfig: {
-            type: Object,
-            default() {
-                return {};
+    import { drop, every, forEach, get, isArray, map, set } from 'lodash';
+    import axios from 'axios';
+    import Papa from 'papaparse';
+    import mimeTypes from "mime-types";
+    export default {
+        props: {
+            value: Array,
+            url: {
+                type: String
+            },
+            mapFields: {
+                required: true
+            },
+            callback: {
+                type: Function,
+                default: () => ({})
+            },
+            catch: {
+                type: Function,
+                default: () => ({})
+            },
+            finally: {
+                type: Function,
+                default: () => ({})
+            },
+            parseConfig: {
+                type: Object,
+                default() {
+                    return {};
+                }
+            },
+            headers: {
+                default: null
+            },
+            loadBtnText: {
+                type: String,
+                default: "Next"
+            },
+            submitBtnText: {
+                type: String,
+                default: "Submit"
+            },
+            tableClass: {
+                type: String,
+                default: "table"
+            },
+            checkboxClass: {
+                type: String,
+                default: "form-check-input"
+            },
+            buttonClass: {
+                type: String,
+                default: "btn btn-primary"
+            },
+            inputClass: {
+                type: String,
+                default: "form-control-file"
+            },
+            validation: {
+                type: Boolean,
+                default: true,
+            },
+            fileMimeTypes: {
+                type: Array,
+                default: () => {
+                    return ["text/csv", "text/x-csv", "application/vnd.ms-excel", "text/plain"];
+                }
             }
         },
-        headers: {
-            default: null
-        },
-        loadBtnText: {
-            type: String,
-            default: "Next"
-        },
-        submitBtnText: {
-            type: String,
-            default: "Submit"
-        },
-        tableClass: {
-            type: String,
-            default: "table"
-        },
-        checkboxClass: {
-            type: String,
-            default: "form-check-input"
-        },
-        buttonClass: {
-            type: String,
-            default: "btn btn-primary"
-        },
-        inputClass: {
-            type: String,
-            default: "form-control-file"
-        },
-        validation: {
-            type: Boolean,
-            default: true,
-        },
-        fileMimeTypes: {
-            type: Array,
-            default: () => {
-                return ["text/csv", "text/x-csv", "application/vnd.ms-excel", "text/plain"];
-            }
-        }
-    },
-    data: () => ({
-        form: {
+        data: () => ({
+            form: {
+                csv: null,
+            },
+            fieldsToMap: [],
+            map: {},
+            hasHeaders: true,
             csv: null,
-        },
-        fieldsToMap: [],
-        map: {},
-        hasHeaders: true,
-        csv: null,
-        sample: null,
-        isValidFileMimeType: false,
-        fileSelected: false,
-        filename: 'Choose a file',
-        termsClicked: false
-    }),
-    created() {
-        this.hasHeaders = this.headers;
-        if (isArray(this.mapFields)) {
-            this.fieldsToMap = map(this.mapFields, (item) => {
-                return {
-                    key: item,
-                    label: item
-                };
-            });
-        } else {
-            this.fieldsToMap = map(this.mapFields, (label, key) => {
-                return {
-                    key: key,
-                    label: label
-                };
-            });
-        }
-    },
-    methods: {
-        submit() {
-            const _this = this;
-            this.form.csv = this.buildMappedCsv();
-            this.$emit('input', this.form.csv);
-            if (this.url) {
-                axios.post(this.url, this.form).then(response => {
-                    _this.callback(response);
-                }).catch(response => {
-                    _this.catch(response);
-                }).finally(response => {
-                    _this.finally(response);
+            sample: null,
+            isValidFileMimeType: false,
+            fileSelected: false,
+            filename: 'Choose a file',
+        }),
+        created() {
+            this.hasHeaders = this.headers;
+            if (isArray(this.mapFields)) {
+                this.fieldsToMap = map(this.mapFields, (item) => {
+                    return {
+                        key: item,
+                        label: item
+                    };
                 });
             } else {
-                _this.callback(this.form.csv);
-            }
-        },
-        buildMappedCsv() {
-            const _this = this;
-            let csv = this.hasHeaders ? drop(this.csv) : this.csv;
-            return map(csv, (row) => {
-                let newRow = {};
-                forEach(_this.map, (column, field) => {
-                    set(newRow, field, get(row, column));
+                this.fieldsToMap = map(this.mapFields, (label, key) => {
+                    return {
+                        key: key,
+                        label: label
+                    };
                 });
-                return newRow;
-            });
-        },
-        validFileMimeType() {
-            let file = this.$refs.csv.files[0];
-            // this.$emit('testme', file);
-            this.filename = file.name;
-
-            const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
-            if (file) {
-                this.fileSelected = true;
-                this.isValidFileMimeType = this.validation ? this.validateMimeType(mimeType) : true;
-            } else {
-                this.isValidFileMimeType = !this.validation;
-                this.fileSelected = false;
             }
         },
-        validateMimeType(type) {
-            return this.fileMimeTypes.indexOf(type) > -1;
-        },
-        load() {
-            const _this = this;
-
-            this.$store.commit('changeModalMargin');
-
-            this.readFile((output) => {
-                _this.sample = get(Papa.parse(output, { preview: 2, skipEmptyLines: true }), "data");
-                _this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data");
-            });
-        },
-        readFile(callback) {
-            let file = this.$refs.csv.files[0];
-            if (file) {
-                let reader = new FileReader();
-                reader.readAsText(file, "UTF-8");
-                reader.onload = function (evt) {
-                    callback(evt.target.result);
-                };
-                reader.onerror = function () {
-                };
-            }
-        },
-        toggleHasHeaders() {
-            this.hasHeaders = !this.hasHeaders;
-        },
-        makeId(id) {
-            return `${id}${this._uid}`;
-        }
-    },
-    watch: {
-        map: {
-            deep: true,
-            handler: function (newVal) {
-                if (!this.url) {
-                    let hasAllKeys = Array.isArray(this.mapFields) ? every(this.mapFields, function (item) {
-                        return newVal.hasOwnProperty(item);
-                    }) : every(this.mapFields, function (item, key) {
-                        return newVal.hasOwnProperty(key);
+        methods: {
+            submit() {
+                const _this = this;
+                this.form.csv = this.buildMappedCsv();
+                this.$emit('input', this.form.csv);
+                if (this.url) {
+                    axios.post(this.url, this.form).then(response => {
+                        _this.callback(response);
+                    }).catch(response => {
+                        _this.catch(response);
+                    }).finally(response => {
+                        _this.finally(response);
                     });
-                    if (hasAllKeys) {
-                        this.submit();
+                } else {
+                    _this.callback(this.form.csv);
+                }
+            },
+            buildMappedCsv() {
+                const _this = this;
+                let csv = this.hasHeaders ? drop(this.csv) : this.csv;
+                return map(csv, (row) => {
+                    let newRow = {};
+                    forEach(_this.map, (column, field) => {
+                        set(newRow, field, get(row, column));
+                    });
+                    return newRow;
+                });
+            },
+            validFileMimeType() {
+                let file = this.$refs.csv.files[0];
+                // this.$emit('testme', file);
+                this.filename = file.name;
+
+                const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
+                if (file) {
+                    this.fileSelected = true;
+                    this.isValidFileMimeType = this.validation ? this.validateMimeType(mimeType) : true;
+                } else {
+                    this.isValidFileMimeType = !this.validation;
+                    this.fileSelected = false;
+                }
+            },
+            validateMimeType(type) {
+                return this.fileMimeTypes.indexOf(type) > -1;
+            },
+            load() {
+                const _this = this;
+
+                this.$store.commit('changeModalMargin');
+
+                this.readFile((output) => {
+                    _this.sample = get(Papa.parse(output, { preview: 2, skipEmptyLines: true }), "data");
+                    _this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data");
+                });
+            },
+            readFile(callback) {
+                let file = this.$refs.csv.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.readAsText(file, "UTF-8");
+                    reader.onload = function (evt) {
+                        callback(evt.target.result);
+                    };
+                    reader.onerror = function () {
+                    };
+                }
+            },
+            toggleHasHeaders() {
+                this.hasHeaders = !this.hasHeaders;
+            },
+            makeId(id) {
+                return `${id}${this._uid}`;
+            }
+        },
+        watch: {
+            map: {
+                deep: true,
+                handler: function (newVal) {
+                    if (!this.url) {
+                        let hasAllKeys = Array.isArray(this.mapFields) ? every(this.mapFields, function (item) {
+                            return newVal.hasOwnProperty(item);
+                        }) : every(this.mapFields, function (item, key) {
+                            return newVal.hasOwnProperty(key);
+                        });
+                        if (hasAllKeys) {
+                            this.submit();
+                        }
                     }
                 }
             }
-        }
-    },
-    computed: {
-      // checkTermsClicked() {
-      //   return this.termsClicked;
-      // },
-      firstRow() {
-        return get(this, "sample.0");
-      },
-      showErrorMessage() {
-        return this.fileSelected && !this.isValidFileMimeType;
-      },
-      disabledNextButton() {
-        return !this.isValidFileMimeType;
-      }
-    },
-};
+        },
+        computed: {
+            firstRow() {
+                return get(this, "sample.0");
+            },
+            showErrorMessage() {
+                return this.fileSelected && !this.isValidFileMimeType;
+            },
+            disabledNextButton() {
+                return !this.isValidFileMimeType;
+            }
+        },
+    };
 </script>
