@@ -209,8 +209,9 @@
             },
             validFileMimeType() {
                 this.$store.commit('testSomething', 'abc');
-                this.$emit('testme', '123');
                 let file = this.$refs.csv.files[0];
+                this.$emit('testme', file);
+
                 const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
                 if (file) {
                     this.fileSelected = true;
