@@ -75,7 +75,7 @@
                 class="button is-medium is-primary" 
                 @click.prevent="submit" 
                 :disabled="! terms"
-              >Upload</button>
+              >Next</button>
             </slot>
           </div>
         </div>
@@ -192,17 +192,18 @@
                 const _this = this;
                 this.form.csv = this.buildMappedCsv();
                 this.$emit('input', this.form.csv);
-                if (this.url) {
-                    axios.post(this.url, this.form).then(response => {
-                        _this.callback(response);
-                    }).catch(response => {
-                        _this.catch(response);
-                    }).finally(response => {
-                        _this.finally(response);
-                    });
-                } else {
-                    _this.callback(this.form.csv);
-                }
+                // go to add Seqs or Tags
+                // if (this.url) {
+                //     axios.post(this.url, this.form).then(response => {
+                //         _this.callback(response);
+                //     }).catch(response => {
+                //         _this.catch(response);
+                //     }).finally(response => {
+                //         _this.finally(response);
+                //     });
+                // } else {
+                //     _this.callback(this.form.csv);
+                // }
             },
             buildMappedCsv() {
                 const _this = this;
