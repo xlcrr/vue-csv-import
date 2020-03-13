@@ -45,9 +45,13 @@
       </div>
       <div class="vue-csv-uploader-part-two">
         <div class="vue-csv-mapping" v-if="sample">
-            <div class="flex">
-                <p>Field</p>
-                <p>CSV Column</p>
+            <div class="columns">
+                <div class="column is-half">
+                    <p>Field</p>
+                </div>
+                <div class="column is-half">
+                    <p>CSV Column</p>
+                </div>
             </div>
             <!-- There was a table here but we needed to split it into 2 columns -->
             <div class="columns">
@@ -77,7 +81,7 @@
           <input type="checkbox" name="termslabel" id="termslabel" v-model="terms" style="margin-right: 1em;" />
           <label for="termslabel">You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</label>
 
-          <div class="form-group" v-if="url">
+          <div class="form-group mt1em" v-if="url">
             <slot name="submit" :submit="submit">
               <button 
                 class="button is-medium is-primary" 
