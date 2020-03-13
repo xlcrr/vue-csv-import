@@ -52,25 +52,25 @@
             <!-- There was a table here but we needed to split it into 2 columns -->
             <div class="columns">
                 <div class="column is-half">
-                    <div v-for="(field, key) in fieldsToMap.slice(0,10)" :key="key">
-                        <td>{{ field.label }}</td>
-                        <td>
+                    <div v-for="(field, key) in fieldsToMap.slice(0,10)" :key="key" class="flex">
+                        <div class="flex-05">{{ field.label }}</div>
+                        <div class="flex-1">
                           <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
                             <option :value="null" disabled hidden>Select a column</option>
                             <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                           </select>
-                        </td>
+                        </div>
                     </div>
                 </div>
                 <div class="column is-half">
-                    <div v-for="(field, key) in fieldsToMap.slice(11,20)" :key="key">
-                        <td>{{ field.label }}</td>
-                        <td>
+                    <div v-for="(field, key) in fieldsToMap.slice(11,20)" :key="key" class="flex">
+                        <div class="flex-05">{{ field.label }}</div>
+                        <div class="flex-1">
                           <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
                             <option :value="null" disabled hidden>Select a column</option>
                             <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
                           </select>
-                        </td>
+                        </div>
                     </div>
                 </div>
             </div>
