@@ -45,27 +45,35 @@
       </div>
       <div class="vue-csv-uploader-part-two">
         <div class="vue-csv-mapping" v-if="sample">
-          <table class="table is-fullwidth">
-            <slot name="thead">
-              <thead>
-              <tr>
-                <th>Field</th>
-                <th>CSV Column</th>
-              </tr>
-              </thead>
-            </slot>
-            <tbody>
-              <tr v-for="(field, key) in fieldsToMap" :key="key">
-                <td>{{ field.label }}</td>
-                <td>
-                  <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
-                    <option :value="null" disabled hidden>Select a column</option>
-                    <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
-                  </select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <div class="flex">
+                <p>Field</p>
+                <p>CSV Column</p>
+            </div>
+            <!-- There was a table here but we needed to split it into 2 columns -->
+            <div class="columns">
+                <div class="column is-half">
+                    <div v-for="(field, key) in fieldsToMap.slice(0,10)" :key="key">
+                        <td>{{ field.label }}</td>
+                        <td>
+                          <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
+                            <option :value="null" disabled hidden>Select a column</option>
+                            <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
+                          </select>
+                        </td>
+                    </div>
+                </div>
+                <div class="column is-half">
+                    <div v-for="(field, key) in fieldsToMap.slice(11,20)" :key="key">
+                        <td>{{ field.label }}</td>
+                        <td>
+                          <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
+                            <option :value="null" disabled hidden>Select a column</option>
+                            <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
+                          </select>
+                        </td>
+                    </div>
+                </div>
+            </div>
           <input type="checkbox" name="termslabel" id="termslabel" v-model="terms" style="margin-right: 1em;" />
           <label for="termslabel">You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</label>
 
@@ -236,7 +244,7 @@
             load() {
                 const _this = this;
 
-                this.$store.commit('changeModalMargin');
+                this.$store.commit('changeModalMargin', true);
                 this.nextClicked = false;
 
                 this.readFile((output) => {
