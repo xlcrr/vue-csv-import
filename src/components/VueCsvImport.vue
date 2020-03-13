@@ -54,7 +54,7 @@
                 <div class="column is-half">
                     <div v-for="(field, key) in fieldsToMap.slice(0,10)" :key="key" class="flex">
                         <div class="flex-05">{{ field.label }}</div>
-                        <div class="flex-1">
+                        <div class="flex-1 mb1em">
                           <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
                             <option :value="null" disabled hidden>Select a column</option>
                             <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
@@ -65,7 +65,7 @@
                 <div class="column is-half">
                     <div v-for="(field, key) in fieldsToMap.slice(11,20)" :key="key" class="flex">
                         <div class="flex-05">{{ field.label }}</div>
-                        <div class="flex-1">
+                        <div class="flex-1 mb1em">
                           <select class="input" :name="`csv_uploader_map_${key}`" v-model="map[field.key]">
                             <option :value="null" disabled hidden>Select a column</option>
                             <option v-for="(column, key) in firstRow" :key="key" :value="key">{{ column }}</option>
