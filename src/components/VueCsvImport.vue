@@ -82,7 +82,7 @@
                 </div>
             </div>
           <input type="checkbox" name="termslabel" id="termslabel" v-model="terms" style="margin-right: 1em;" />
-          <label for="termslabel">You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions.</label>
+          <label for="termslabel">{{ TosText }}</label>
 
           <div class="form-group mt1em" v-if="url">
             <slot name="submit" :submit="submit">
@@ -167,6 +167,10 @@ export default {
             default: () => {
                 return ["text/csv", "text/x-csv", "application/vnd.ms-excel", "text/plain"];
             }
+        },
+        TosText: {
+            type: String,
+            default: "You accept the ToS and acknowledge that your account will be flagged and blocked if you import contacts without their permissions."
         }
     },
     data: () => ({
